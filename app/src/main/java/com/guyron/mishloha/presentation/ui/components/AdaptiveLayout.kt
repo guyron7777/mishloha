@@ -6,7 +6,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -102,15 +101,6 @@ private fun TabletRepositoryDetailContent(
         TopAppBar(
             title = { Text("Repository Details") },
             actions = {
-                IconButton(
-                    onClick = { onToggleFavorite(repository) }
-                ) {
-                    Icon(
-                        imageVector = if (repository.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (repository.isFavorite) "Remove from favorites" else "Add to favorites",
-                        tint = if (repository.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             }
         )
 
