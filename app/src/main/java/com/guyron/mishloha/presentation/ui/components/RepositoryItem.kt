@@ -22,6 +22,7 @@ import coil.request.ImageRequest
 import com.guyron.mishloha.domain.models.Repository
 import androidx.compose.ui.res.stringResource
 import com.guyron.mishloha.R
+import com.guyron.mishloha.data.Constants
 
 @Composable
 fun RepositoryItem(
@@ -56,7 +57,7 @@ fun RepositoryItem(
                             .build(),
                         contentDescription = stringResource(R.string.avatar_of, repository.owner.login),
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(Constants.DEFAULT_AVATAR_SIZE.dp)
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )

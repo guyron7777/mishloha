@@ -27,6 +27,7 @@ import com.guyron.mishloha.presentation.ui.components.TimeFrameSelector
 import com.guyron.mishloha.presentation.viewmodels.TrendingRepositoriesViewModel
 import androidx.compose.ui.res.stringResource
 import com.guyron.mishloha.R
+import com.guyron.mishloha.data.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,7 +136,7 @@ private fun TrendingRepositoriesList(
                 loadState.refresh is LoadState.Error -> {
                     item {
                         ErrorContent(
-                            error = (loadState.refresh as LoadState.Error).error.message ?: "Unknown error",
+                            error = (loadState.refresh as LoadState.Error).error.message ?: Constants.DEFAULT_ERROR_MESSAGE,
                             onRetry = { retry() },
                             onDismiss = { }
                         )
@@ -144,7 +145,7 @@ private fun TrendingRepositoriesList(
                 loadState.append is LoadState.Error -> {
                     item {
                         ErrorContent(
-                            error = (loadState.append as LoadState.Error).error.message ?: "Unknown error",
+                            error = (loadState.append as LoadState.Error).error.message ?: Constants.DEFAULT_ERROR_MESSAGE,
                             onRetry = { retry() },
                             onDismiss = { }
                         )

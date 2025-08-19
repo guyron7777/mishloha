@@ -48,11 +48,12 @@ fun LoadingContent(
 
 @Composable
 fun ErrorContent(
+    modifier: Modifier = Modifier,
     error: String,
     onRetry: (() -> Unit)? = null,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+
+    ) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -67,7 +68,7 @@ fun ErrorContent(
             color = MaterialTheme.colorScheme.error
         )
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         if (onRetry != null) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -138,12 +139,12 @@ fun AppTopBar(
         title = { Text(title) },
         navigationIcon = {
             if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                contentDescription = stringResource(R.string.back)
-            )
-        }
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.back)
+                    )
+                }
             }
         },
         actions = actions
@@ -152,12 +153,12 @@ fun AppTopBar(
 
 @Composable
 fun RepositoryList(
+    modifier: Modifier = Modifier,
     repositories: List<Repository>,
     onRepositoryClick: (Repository) -> Unit,
     onFavoriteClick: (Repository) -> Unit,
     showAvatar: Boolean = true,
     showStats: Boolean = true,
-    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -214,6 +215,7 @@ fun ScreenContent(
             isLoading -> {
                 LoadingContent()
             }
+
             error != null -> {
                 ErrorContent(
                     error = error,
@@ -221,6 +223,7 @@ fun ScreenContent(
                     onDismiss = onDismissError
                 )
             }
+
             else -> {
                 content()
             }

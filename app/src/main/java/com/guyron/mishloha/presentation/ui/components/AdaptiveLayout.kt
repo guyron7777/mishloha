@@ -123,7 +123,7 @@ private fun TabletRepositoryDetailContent(
                         .build(),
                     contentDescription = stringResource(R.string.avatar_of, repository.owner.login),
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(Constants.LARGE_AVATAR_SIZE.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
@@ -232,7 +232,7 @@ private fun StatItem(
             painter = icon,
             contentDescription = label,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(Constants.ICON_SIZE.dp)
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
