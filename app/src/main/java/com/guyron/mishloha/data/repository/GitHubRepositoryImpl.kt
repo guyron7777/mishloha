@@ -63,4 +63,12 @@ class GitHubRepositoryImpl @Inject constructor(
         
         return "created:$startDate..$endDate"
     }
+
+    override suspend fun getRepositoryById(repositoryId: Long): Repository? {
+        return try {
+            null
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

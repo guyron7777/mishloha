@@ -26,7 +26,9 @@ fun RepositoryItem(
     repository: Repository,
     onItemClick: (Repository) -> Unit,
     onFavoriteClick: (Repository) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showAvatar: Boolean = true,
+    showStats: Boolean = true
 ) {
     Card(
         modifier = modifier
@@ -44,19 +46,21 @@ fun RepositoryItem(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Top
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(repository.owner.avatarUrl ?: "")
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Avatar of ${repository.owner.login}",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                if (showAvatar) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(repository.owner.avatarUrl ?: "")
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Avatar of ${repository.owner.login}",
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
 
                 Column(
                     modifier = Modifier.weight(1f)
@@ -81,31 +85,33 @@ fun RepositoryItem(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    if (showStats) {
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Stars",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${repository.stargazersCount}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        if (repository.language != null) {
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(
-                                text = repository.language,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = "Stars",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(16.dp)
                             )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "${repository.stargazersCount}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            if (repository.language != null) {
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = repository.language,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
                 }

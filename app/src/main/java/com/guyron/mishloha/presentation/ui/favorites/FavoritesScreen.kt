@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.guyron.mishloha.domain.models.Repository
+import com.guyron.mishloha.presentation.ui.components.RepositoryItem
 import com.guyron.mishloha.presentation.ui.components.SearchBar
 import com.guyron.mishloha.presentation.viewmodels.FavoritesViewModel
 
@@ -102,10 +102,12 @@ private fun FavoritesList(
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             items(repositories) { repository ->
-                FavoriteRepositoryItem(
+                RepositoryItem(
                     repository = repository,
                     onItemClick = onRepositoryClick,
-                    onRemoveFromFavorites = onRemoveFromFavorites
+                    onFavoriteClick = onRemoveFromFavorites,
+                    showAvatar = true,
+                    showStats = true
                 )
             }
         }
@@ -135,63 +137,19 @@ private fun SearchResultsList(
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             items(repositories) { repository ->
-                FavoriteRepositoryItem(
+                RepositoryItem(
                     repository = repository,
                     onItemClick = onRepositoryClick,
-                    onRemoveFromFavorites = onRemoveFromFavorites
+                    onFavoriteClick = onRemoveFromFavorites,
+                    showAvatar = true,
+                    showStats = true
                 )
             }
         }
     }
 }
 
-@Composable
-private fun FavoriteRepositoryItem(
-    repository: Repository,
-    onItemClick: (Repository) -> Unit,
-    onRemoveFromFavorites: (Repository) -> Unit
-) {
-    Card(
-        onClick = {onItemClick(repository)},
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = repository.fullName,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1
-                )
-                repository.description?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 2
-                    )
-                }
-            }
-            IconButton(
-                onClick = { onRemoveFromFavorites(repository) }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Remove from favorites",
-                    tint = MaterialTheme.colorScheme.error
-                )
-            }
-        }
-    }
-}
+
 
 @Composable
 private fun EmptyFavoritesContent() {

@@ -20,16 +20,77 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.guyron.mishloha.domain.models.Repository
+import com.guyron.mishloha.presentation.viewmodels.DataSource
+import com.guyron.mishloha.presentation.viewmodels.RepositoryDetailViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepositoryDetailScreen(
+    repositoryId: Long,
+    onNavigateBack: () -> Unit,
+    viewModel: RepositoryDetailViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    
+    LaunchedEffect(repositoryId) {
+        viewModel.loadRepository(repositoryId)
+    }
+
+    when {
+        uiState.isLoading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        uiState.error != null -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = uiState.error!!,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = onNavigateBack) {
+                        Text("Go Back")
+                    }
+                }
+            }
+            return
+        }
+        uiState.repository != null -> {
+            RepositoryDetailContent(
+                repository = uiState.repository!!,
+                dataSource = uiState.dataSource,
+                onNavigateBack = onNavigateBack,
+                onToggleFavorite = { repository ->
+                    viewModel.toggleFavorite(repository)
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RepositoryDetailContent(
     repository: Repository,
+    dataSource: DataSource,
     onNavigateBack: () -> Unit,
     onToggleFavorite: (Repository) -> Unit
 ) {
@@ -40,7 +101,21 @@ fun RepositoryDetailScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = { Text("Repository Details") },
+            title = { 
+                Column {
+                    Text("Repository Details")
+                    if (dataSource != DataSource.UNKNOWN) {
+                        Text(
+                            text = if (dataSource == DataSource.LOCAL) "Offline" else "Online",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (dataSource == DataSource.LOCAL) 
+                                MaterialTheme.colorScheme.primary 
+                            else 
+                                MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                }
+            },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(

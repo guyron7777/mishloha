@@ -37,4 +37,8 @@ class FavoritesRepositoryImpl @Inject constructor(
     override suspend fun searchFavorites(query: String): List<Repository> {
         return repositoryDao.searchFavorites(query).map { it.toDomain() }
     }
+
+    override suspend fun getRepositoryById(repositoryId: Long): Repository? {
+        return repositoryDao.getRepositoryById(repositoryId)?.toDomain()
+    }
 }

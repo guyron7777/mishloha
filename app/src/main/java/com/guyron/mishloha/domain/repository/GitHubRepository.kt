@@ -9,4 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface GitHubRepository {
     fun getTrendingRepositories(timeFrame: TimeFrame): Flow<PagingData<Repository>>
     suspend fun searchRepositories(query: String, timeFrame: TimeFrame): List<Repository>
+    suspend fun getRepositoryById(repositoryId: Long): Repository?
 }

@@ -9,4 +9,5 @@ interface FavoritesRepository {
     suspend fun removeFromFavorites(repositoryId: Long)
     suspend fun isFavorite(repositoryId: Long): Boolean
     suspend fun searchFavorites(query: String): List<Repository>
+    suspend fun getRepositoryById(repositoryId: Long): Repository?
 }
