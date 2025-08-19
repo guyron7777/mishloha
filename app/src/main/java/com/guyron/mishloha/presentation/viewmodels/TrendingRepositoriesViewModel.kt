@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.guyron.mishloha.domain.models.Repository
 import com.guyron.mishloha.domain.models.TimeFrame
 import com.guyron.mishloha.domain.usecase.AddToFavoritesUseCase
@@ -25,7 +24,7 @@ class TrendingRepositoriesViewModel @Inject constructor(
     private val searchRepositoriesUseCase: SearchRepositoriesUseCase,
     private val addToFavoritesUseCase: AddToFavoritesUseCase,
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
-    private val getFavoriteRepositoriesUseCase: GetFavoriteRepositoriesUseCase,
+    getFavoriteRepositoriesUseCase: GetFavoriteRepositoriesUseCase,
     private val decorateWithFavoritesUseCase: DecorateWithFavoritesUseCase,
 ) : ViewModel() {
 
@@ -90,8 +89,6 @@ class TrendingRepositoriesViewModel @Inject constructor(
             }
         }
     }
-
-    private fun loadTrendingRepositories() { }
 
     private fun performSearch(query: String) {
         viewModelScope.launch {

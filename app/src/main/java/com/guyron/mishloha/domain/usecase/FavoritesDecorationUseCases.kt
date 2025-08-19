@@ -22,7 +22,7 @@ class DecorateWithFavoritesUseCase @Inject constructor() {
 }
 
 class DecorateListWithFavoritesUseCase @Inject constructor() {
-    suspend operator fun invoke(
+    operator fun invoke(
         repositories: List<Repository>,
         favoriteIds: Set<Long>
     ): List<Repository> {
