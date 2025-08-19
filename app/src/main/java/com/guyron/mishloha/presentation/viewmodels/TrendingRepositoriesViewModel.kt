@@ -22,7 +22,6 @@ class TrendingRepositoriesViewModel @Inject constructor(
     private val searchRepositoriesUseCase: SearchRepositoriesUseCase,
     private val addToFavoritesUseCase: AddToFavoritesUseCase,
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
-    private val isFavoriteUseCase: IsFavoriteUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TrendingRepositoriesUiState())
