@@ -24,6 +24,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.guyron.mishloha.domain.models.Repository
+import com.guyron.mishloha.presentation.ui.components.ErrorContent
+import com.guyron.mishloha.presentation.ui.components.LoadingContent
 import com.guyron.mishloha.presentation.viewmodels.DataSource
 import com.guyron.mishloha.presentation.viewmodels.RepositoryDetailViewModel
 import java.text.SimpleDateFormat
@@ -45,32 +47,13 @@ fun RepositoryDetailScreen(
 
     when {
         uiState.isLoading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
+            LoadingContent()
         }
         uiState.error != null -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = uiState.error!!,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = onNavigateBack) {
-                        Text("Go Back")
-                    }
-                }
-            }
+            ErrorContent(
+                error = uiState.error!!,
+                onDismiss = onNavigateBack
+            )
             return
         }
         uiState.repository != null -> {
@@ -104,16 +87,6 @@ private fun RepositoryDetailContent(
             title = { 
                 Column {
                     Text("Repository Details")
-                    if (dataSource != DataSource.UNKNOWN) {
-                        Text(
-                            text = if (dataSource == DataSource.LOCAL) "Offline" else "Online",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = if (dataSource == DataSource.LOCAL) 
-                                MaterialTheme.colorScheme.primary 
-                            else 
-                                MaterialTheme.colorScheme.secondary
-                        )
-                    }
                 }
             },
             navigationIcon = {

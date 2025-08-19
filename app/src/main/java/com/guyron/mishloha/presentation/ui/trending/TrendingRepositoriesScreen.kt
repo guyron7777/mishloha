@@ -7,9 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,6 +16,11 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.guyron.mishloha.domain.models.Repository
+import com.guyron.mishloha.presentation.ui.components.AppTopBar
+import com.guyron.mishloha.presentation.ui.components.ErrorContent
+import com.guyron.mishloha.presentation.ui.components.LoadingContent
+import com.guyron.mishloha.presentation.ui.components.LoadingItem
+import com.guyron.mishloha.presentation.ui.components.EmptyContent
 import com.guyron.mishloha.presentation.ui.components.RepositoryItem
 import com.guyron.mishloha.presentation.ui.components.SearchBar
 import com.guyron.mishloha.presentation.ui.components.TimeFrameSelector
@@ -41,8 +44,8 @@ fun TrendingRepositoriesScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        TopAppBar(
-            title = { Text("Trending Repositories") },
+        AppTopBar(
+            title = "Trending Repositories",
             actions = {
                 IconButton(onClick = onNavigateToFavorites) {
                     Icon(
@@ -63,9 +66,7 @@ fun TrendingRepositoriesScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 uiState.isLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    LoadingContent()
                 }
                 uiState.error != null -> {
                     ErrorContent(
@@ -76,9 +77,7 @@ fun TrendingRepositoriesScreen(
                 }
                 searchQuery.isNotBlank() -> {
                     if (isSearching) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                        LoadingContent()
                     } else {
                         SearchResultsList(
                             repositories = searchResults,
@@ -126,22 +125,12 @@ private fun TrendingRepositoriesList(
             when {
                 loadState.refresh is LoadState.Loading -> {
                     item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .wrapContentWidth(Alignment.CenterHorizontally)
-                        )
+                        LoadingItem()
                     }
                 }
                 loadState.append is LoadState.Loading -> {
                     item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .wrapContentWidth(Alignment.CenterHorizontally)
-                        )
+                        LoadingItem()
                     }
                 }
                 loadState.refresh is LoadState.Error -> {
@@ -174,16 +163,10 @@ private fun SearchResultsList(
     onFavoriteClick: (Repository) -> Unit
 ) {
     if (repositories.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "No repositories found",
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
-            )
-        }
+        EmptyContent(
+            title = "No repositories found",
+            message = "Try adjusting your search criteria"
+        )
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -200,35 +183,4 @@ private fun SearchResultsList(
     }
 }
 
-@Composable
-private fun ErrorContent(
-    error: String,
-    onRetry: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = error,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.error
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Button(onClick = onRetry) {
-                Text("Retry")
-            }
-            OutlinedButton(onClick = onDismiss) {
-                Text("Dismiss")
-            }
-        }
-    }
-}
+

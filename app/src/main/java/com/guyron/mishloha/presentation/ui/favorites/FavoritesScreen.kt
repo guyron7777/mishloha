@@ -3,17 +3,17 @@ package com.guyron.mishloha.presentation.ui.favorites
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.guyron.mishloha.domain.models.Repository
+import com.guyron.mishloha.presentation.ui.components.AppTopBar
+import com.guyron.mishloha.presentation.ui.components.ErrorContent
+import com.guyron.mishloha.presentation.ui.components.LoadingContent
+import com.guyron.mishloha.presentation.ui.components.EmptyContent
 import com.guyron.mishloha.presentation.ui.components.RepositoryItem
 import com.guyron.mishloha.presentation.ui.components.SearchBar
 import com.guyron.mishloha.presentation.viewmodels.FavoritesViewModel
@@ -33,16 +33,9 @@ fun FavoritesScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        TopAppBar(
-            title = { Text("Favorite Repositories") },
-            navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-            }
+        AppTopBar(
+            title = "Favorite Repositories",
+            onNavigateBack = onNavigateBack
         )
 
         SearchBar(
@@ -53,21 +46,19 @@ fun FavoritesScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 uiState.isLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    LoadingContent()
                 }
+
                 uiState.error != null -> {
                     ErrorContent(
                         error = uiState.error!!,
                         onDismiss = { viewModel.clearError() }
                     )
                 }
+
                 searchQuery.isNotBlank() -> {
                     if (isSearching) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                        LoadingContent()
                     } else {
                         SearchResultsList(
                             repositories = searchResults,
@@ -76,6 +67,7 @@ fun FavoritesScreen(
                         )
                     }
                 }
+
                 else -> {
                     FavoritesList(
                         repositories = uiState.favorites,
@@ -95,7 +87,10 @@ private fun FavoritesList(
     onRemoveFromFavorites: (Repository) -> Unit
 ) {
     if (repositories.isEmpty()) {
-        EmptyFavoritesContent()
+        EmptyContent(
+            title = "No favorite repositories yet",
+            message = "Add repositories to your favorites to see them here"
+        )
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -121,16 +116,10 @@ private fun SearchResultsList(
     onRemoveFromFavorites: (Repository) -> Unit
 ) {
     if (repositories.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "No favorites found",
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
-            )
-        }
+        EmptyContent(
+            title = "No favorites found",
+            message = "Try adjusting your search criteria"
+        )
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -151,51 +140,4 @@ private fun SearchResultsList(
 
 
 
-@Composable
-private fun EmptyFavoritesContent() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "No favorite repositories yet",
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Add repositories to your favorites to see them here",
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
 
-@Composable
-private fun ErrorContent(
-    error: String,
-    onDismiss: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = error,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.error
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(onClick = onDismiss) {
-            Text("Dismiss")
-        }
-    }
-}
