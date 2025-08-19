@@ -2,7 +2,6 @@ package com.guyron.mishloha.presentation.ui.trending
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
@@ -20,7 +19,8 @@ import com.guyron.mishloha.presentation.ui.components.AppTopBar
 import com.guyron.mishloha.presentation.ui.components.ErrorContent
 import com.guyron.mishloha.presentation.ui.components.LoadingContent
 import com.guyron.mishloha.presentation.ui.components.LoadingItem
-import com.guyron.mishloha.presentation.ui.components.EmptyContent
+import com.guyron.mishloha.presentation.ui.components.ScreenContent
+import com.guyron.mishloha.presentation.ui.components.SearchResultsList
 import com.guyron.mishloha.presentation.ui.components.RepositoryItem
 import com.guyron.mishloha.presentation.ui.components.SearchBar
 import com.guyron.mishloha.presentation.ui.components.TimeFrameSelector
@@ -63,18 +63,13 @@ fun TrendingRepositoriesScreen(
             query = searchQuery,
             onQueryChange = { viewModel.updateSearchQuery(it) }
         )
-        Box(modifier = Modifier.fillMaxSize()) {
+        ScreenContent(
+            isLoading = uiState.isLoading,
+            error = uiState.error,
+            onRetry = { viewModel.selectTimeFrame(selectedTimeFrame) },
+            onDismissError = { viewModel.clearError() }
+        ) {
             when {
-                uiState.isLoading -> {
-                    LoadingContent()
-                }
-                uiState.error != null -> {
-                    ErrorContent(
-                        error = uiState.error!!,
-                        onRetry = { viewModel.selectTimeFrame(selectedTimeFrame) },
-                        onDismiss = { viewModel.clearError() }
-                    )
-                }
                 searchQuery.isNotBlank() -> {
                     if (isSearching) {
                         LoadingContent()
@@ -82,7 +77,9 @@ fun TrendingRepositoriesScreen(
                         SearchResultsList(
                             repositories = searchResults,
                             onRepositoryClick = onRepositoryClick,
-                            onFavoriteClick = { viewModel.toggleFavorite(it) }
+                            onFavoriteClick = { viewModel.toggleFavorite(it) },
+                            emptyTitle = "No repositories found",
+                            emptyMessage = "Try adjusting your search criteria"
                         )
                     }
                 }
@@ -156,31 +153,6 @@ private fun TrendingRepositoriesList(
     }
 }
 
-@Composable
-private fun SearchResultsList(
-    repositories: List<Repository>,
-    onRepositoryClick: (Repository) -> Unit,
-    onFavoriteClick: (Repository) -> Unit
-) {
-    if (repositories.isEmpty()) {
-        EmptyContent(
-            title = "No repositories found",
-            message = "Try adjusting your search criteria"
-        )
-    } else {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-            items(repositories) { repository ->
-                RepositoryItem(
-                    repository = repository,
-                    onItemClick = onRepositoryClick,
-                    onFavoriteClick = onFavoriteClick
-                )
-            }
-        }
-    }
-}
+
 
 

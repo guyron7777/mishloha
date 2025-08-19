@@ -3,6 +3,7 @@ package com.guyron.mishloha.presentation.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -27,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.guyron.mishloha.domain.models.Repository
 
 @Composable
 fun LoadingContent(
@@ -142,4 +146,82 @@ fun AppTopBar(
         },
         actions = actions
     )
+}
+
+@Composable
+fun RepositoryList(
+    repositories: List<Repository>,
+    onRepositoryClick: (Repository) -> Unit,
+    onFavoriteClick: (Repository) -> Unit,
+    showAvatar: Boolean = true,
+    showStats: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 8.dp)
+    ) {
+        items(repositories) { repository ->
+            RepositoryItem(
+                repository = repository,
+                onItemClick = onRepositoryClick,
+                onFavoriteClick = onFavoriteClick,
+                showAvatar = showAvatar,
+                showStats = showStats
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchResultsList(
+    repositories: List<Repository>,
+    onRepositoryClick: (Repository) -> Unit,
+    onFavoriteClick: (Repository) -> Unit,
+    emptyTitle: String,
+    emptyMessage: String,
+    showAvatar: Boolean = true,
+    showStats: Boolean = true
+) {
+    if (repositories.isEmpty()) {
+        EmptyContent(
+            title = emptyTitle,
+            message = emptyMessage
+        )
+    } else {
+        RepositoryList(
+            repositories = repositories,
+            onRepositoryClick = onRepositoryClick,
+            onFavoriteClick = onFavoriteClick,
+            showAvatar = showAvatar,
+            showStats = showStats
+        )
+    }
+}
+
+@Composable
+fun ScreenContent(
+    isLoading: Boolean,
+    error: String?,
+    onRetry: (() -> Unit)? = null,
+    onDismissError: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        when {
+            isLoading -> {
+                LoadingContent()
+            }
+            error != null -> {
+                ErrorContent(
+                    error = error,
+                    onRetry = onRetry,
+                    onDismiss = onDismissError
+                )
+            }
+            else -> {
+                content()
+            }
+        }
+    }
 }
