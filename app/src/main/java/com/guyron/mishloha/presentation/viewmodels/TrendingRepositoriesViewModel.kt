@@ -8,6 +8,7 @@ import com.guyron.mishloha.domain.models.Repository
 import com.guyron.mishloha.domain.models.TimeFrame
 import com.guyron.mishloha.domain.usecase.AddToFavoritesUseCase
 import com.guyron.mishloha.domain.usecase.DecorateWithFavoritesUseCase
+import com.guyron.mishloha.domain.usecase.DecorateListWithFavoritesUseCase
 import com.guyron.mishloha.domain.usecase.GetTrendingRepositoriesUseCase
 import com.guyron.mishloha.domain.usecase.GetFavoriteRepositoriesUseCase
 import com.guyron.mishloha.domain.usecase.RemoveFromFavoritesUseCase
@@ -26,6 +27,7 @@ class TrendingRepositoriesViewModel @Inject constructor(
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
     getFavoriteRepositoriesUseCase: GetFavoriteRepositoriesUseCase,
     private val decorateWithFavoritesUseCase: DecorateWithFavoritesUseCase,
+    private val decorateListWithFavoritesUseCase: DecorateListWithFavoritesUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TrendingRepositoriesUiState())
@@ -95,7 +97,8 @@ class TrendingRepositoriesViewModel @Inject constructor(
             try {
                 _isSearching.value = true
                 val results = searchRepositoriesUseCase(query, _selectedTimeFrame.value)
-                _searchResults.value = results
+                val decoratedResults = decorateListWithFavoritesUseCase(results, favoriteIds.value)
+                _searchResults.value = decoratedResults
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     error = "Search failed: ${e.message}"

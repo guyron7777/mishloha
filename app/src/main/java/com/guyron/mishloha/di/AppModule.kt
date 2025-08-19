@@ -68,10 +68,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGitHubRepository(
-        apiService: GitHubApiService,
-        repositoryDao: RepositoryDao
+        apiService: GitHubApiService
     ): GitHubRepository {
-        return GitHubRepositoryImpl(apiService, repositoryDao)
+        return GitHubRepositoryImpl(apiService)
     }
 
     @Provides
