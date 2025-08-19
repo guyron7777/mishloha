@@ -4,14 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.guyron.mishloha.domain.models.Repository
 import com.guyron.mishloha.domain.models.TimeFrame
 import com.guyron.mishloha.domain.usecase.AddToFavoritesUseCase
+import com.guyron.mishloha.domain.usecase.DecorateWithFavoritesUseCase
 import com.guyron.mishloha.domain.usecase.GetTrendingRepositoriesUseCase
-import com.guyron.mishloha.domain.usecase.IsFavoriteUseCase
+import com.guyron.mishloha.domain.usecase.GetFavoriteRepositoriesUseCase
 import com.guyron.mishloha.domain.usecase.RemoveFromFavoritesUseCase
 import com.guyron.mishloha.domain.usecase.SearchRepositoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +25,8 @@ class TrendingRepositoriesViewModel @Inject constructor(
     private val searchRepositoriesUseCase: SearchRepositoriesUseCase,
     private val addToFavoritesUseCase: AddToFavoritesUseCase,
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
+    private val getFavoriteRepositoriesUseCase: GetFavoriteRepositoriesUseCase,
+    private val decorateWithFavoritesUseCase: DecorateWithFavoritesUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TrendingRepositoriesUiState())
@@ -39,16 +44,25 @@ class TrendingRepositoriesViewModel @Inject constructor(
     private val _searchResults = MutableStateFlow<List<Repository>>(emptyList())
     val searchResults: StateFlow<List<Repository>> = _searchResults.asStateFlow()
 
-    private val _repositories = MutableStateFlow<PagingData<Repository>>(PagingData.empty())
-    val repositories: Flow<PagingData<Repository>> = _repositories.asStateFlow()
+    private val favoriteIds: StateFlow<Set<Long>> = getFavoriteRepositoriesUseCase()
+        .map { repos -> repos.map { it.id }.toSet() }
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptySet())
 
-    init {
-        loadTrendingRepositories()
-    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val repositories: Flow<PagingData<Repository>> = selectedTimeFrame
+        .flatMapLatest { timeFrame ->
+            getTrendingRepositoriesUseCase(timeFrame)
+                .cachedIn(viewModelScope)
+        }
+        .let { pagingFlow ->
+            decorateWithFavoritesUseCase(pagingFlow, favoriteIds)
+        }
+
+    init { }
 
     fun selectTimeFrame(timeFrame: TimeFrame) {
         _selectedTimeFrame.value = timeFrame
-        loadTrendingRepositories()
     }
 
     fun updateSearchQuery(query: String) {
@@ -69,7 +83,6 @@ class TrendingRepositoriesViewModel @Inject constructor(
                 } else {
                     addToFavoritesUseCase(repository)
                 }
-                loadTrendingRepositories()
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     error = "Failed to update favorite: ${e.message}"
@@ -78,27 +91,7 @@ class TrendingRepositoriesViewModel @Inject constructor(
         }
     }
 
-    private fun loadTrendingRepositories() {
-        viewModelScope.launch {
-            try {
-                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-                
-                getTrendingRepositoriesUseCase(_selectedTimeFrame.value)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _repositories.value = pagingData
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false
-                        )
-                    }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = "Failed to load repositories: ${e.message}"
-                )
-            }
-        }
-    }
+    private fun loadTrendingRepositories() { }
 
     private fun performSearch(query: String) {
         viewModelScope.launch {

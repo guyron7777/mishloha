@@ -34,9 +34,7 @@ class GitHubRepositoryImpl @Inject constructor(
             }
         ).flow.map { pagingData ->
             pagingData.map { dto ->
-                val domainRepo = dto.toDomain()
-                val isFavorite = repositoryDao.isFavorite(domainRepo.id) ?: false
-                domainRepo.copy(isFavorite = isFavorite)
+                dto.toDomain()
             }
         }
     }
@@ -46,9 +44,7 @@ class GitHubRepositoryImpl @Inject constructor(
         val response = apiService.searchRepositories(query = searchQuery)
         
         return response.items.map { dto ->
-            val domainRepo = dto.toDomain()
-            val isFavorite = repositoryDao.isFavorite(domainRepo.id) ?: false
-            domainRepo.copy(isFavorite = isFavorite)
+            dto.toDomain()
         }
     }
 

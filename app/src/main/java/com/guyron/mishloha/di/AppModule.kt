@@ -8,6 +8,8 @@ import com.guyron.mishloha.data.repository.FavoritesRepositoryImpl
 import com.guyron.mishloha.data.repository.GitHubRepositoryImpl
 import com.guyron.mishloha.domain.repository.FavoritesRepository
 import com.guyron.mishloha.domain.repository.GitHubRepository
+import com.guyron.mishloha.domain.usecase.DecorateListWithFavoritesUseCase
+import com.guyron.mishloha.domain.usecase.DecorateWithFavoritesUseCase
 
 import dagger.Module
 import dagger.Provides
@@ -79,4 +81,12 @@ object AppModule {
     ): FavoritesRepository {
         return FavoritesRepositoryImpl(repositoryDao)
     }
+
+    @Provides
+    @Singleton
+    fun provideDecorateWithFavoritesUseCase(): DecorateWithFavoritesUseCase = DecorateWithFavoritesUseCase()
+
+    @Provides
+    @Singleton
+    fun provideDecorateListWithFavoritesUseCase(): DecorateListWithFavoritesUseCase = DecorateListWithFavoritesUseCase()
 }
