@@ -1,7 +1,6 @@
 package com.guyron.mishloha.presentation.ui.detail
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -29,6 +28,7 @@ import com.guyron.mishloha.presentation.viewmodels.DataSource
 import com.guyron.mishloha.presentation.viewmodels.RepositoryDetailViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -236,7 +236,7 @@ private fun RepositoryDetailContent(
 
             Button(
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(repository.htmlUrl))
+                    val intent = Intent(Intent.ACTION_VIEW, repository.htmlUrl.toUri())
                     context.startActivity(intent)
                 },
                 modifier = Modifier.fillMaxWidth()

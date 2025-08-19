@@ -67,7 +67,7 @@ class GitHubRepositoryImpl @Inject constructor(
     override suspend fun getRepositoryById(repositoryId: Long): Repository? {
         return try {
             null
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
