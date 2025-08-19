@@ -26,7 +26,6 @@ import coil.request.ImageRequest
 import com.guyron.mishloha.domain.models.Repository
 import com.guyron.mishloha.presentation.ui.components.ErrorContent
 import com.guyron.mishloha.presentation.ui.components.LoadingContent
-import com.guyron.mishloha.presentation.viewmodels.DataSource
 import com.guyron.mishloha.presentation.viewmodels.RepositoryDetailViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,7 +58,6 @@ fun RepositoryDetailScreen(
         uiState.repository != null -> {
             RepositoryDetailContent(
                 repository = uiState.repository!!,
-                dataSource = uiState.dataSource,
                 onNavigateBack = onNavigateBack,
                 onToggleFavorite = { repository ->
                     viewModel.toggleFavorite(repository)
@@ -73,7 +71,6 @@ fun RepositoryDetailScreen(
 @Composable
 private fun RepositoryDetailContent(
     repository: Repository,
-    dataSource: DataSource,
     onNavigateBack: () -> Unit,
     onToggleFavorite: (Repository) -> Unit
 ) {
