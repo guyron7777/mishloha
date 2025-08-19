@@ -68,4 +68,14 @@ dependencies {
     // Paging
     implementation(libs.paging.runtime)
     implementation(libs.paging.compose)
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
+    // Database
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
 }
