@@ -13,7 +13,6 @@ import com.guyron.mishloha.domain.models.Repository
 import com.guyron.mishloha.presentation.ui.detail.RepositoryDetailScreen
 import com.guyron.mishloha.presentation.ui.trending.TrendingRepositoriesScreen
 import java.util.Date
-import kotlin.text.get
 
 sealed class Screen(val route: String) {
     object TrendingRepositories : Screen("trending_repositories")
