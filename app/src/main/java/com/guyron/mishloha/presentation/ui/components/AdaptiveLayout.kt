@@ -1,12 +1,10 @@
-package com.guyron.mishloha.presentation.ui.detail
+package com.guyron.mishloha.presentation.ui.components
 
-import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -20,84 +18,89 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.guyron.mishloha.domain.models.Repository
-import com.guyron.mishloha.presentation.ui.components.ErrorContent
-import com.guyron.mishloha.presentation.ui.components.LoadingContent
-import com.guyron.mishloha.presentation.viewmodels.RepositoryDetailViewModel
-import com.guyron.mishloha.R
+import androidx.core.net.toUri
+import android.content.Intent
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.core.net.toUri
+import com.guyron.mishloha.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RepositoryDetailScreen(
-    repositoryId: Long,
-    onNavigateBack: () -> Unit,
-    viewModel: RepositoryDetailViewModel = hiltViewModel()
+fun AdaptiveLayout(
+    windowSizeClass: WindowSizeClass,
+    trendingContent: @Composable () -> Unit,
+    detailContent: @Composable (Repository?) -> Unit,
+    selectedRepository: Repository?,
+    onRepositorySelected: (Repository) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(repositoryId) {
-        viewModel.loadRepository(repositoryId)
-    }
-
-    when {
-        uiState.isLoading -> {
-            LoadingContent()
-        }
-
-        uiState.error != null -> {
-            ErrorContent(
-                error = uiState.error!!,
-                onDismiss = onNavigateBack
-            )
-            return
-        }
-
-        uiState.repository != null -> {
-            RepositoryDetailContent(
-                repository = uiState.repository!!,
-                onNavigateBack = onNavigateBack,
-                onToggleFavorite = { repository ->
-                    viewModel.toggleFavorite(repository)
+    when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Expanded -> {
+            Row(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
+                    trendingContent()
                 }
-            )
+                TabletDivider()
+                Box(
+                    modifier = Modifier
+                        .weight(2f)
+                        .fillMaxHeight()
+                ) {
+                    detailContent(selectedRepository)
+                }
+            }
         }
+
+        else -> {
+            trendingContent()
+        }
+    }
+}
+
+@Composable
+fun TabletDetailPanel(
+    repository: Repository?,
+    onNavigateBack: () -> Unit,
+    onToggleFavorite: (Repository) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (repository != null) {
+        TabletRepositoryDetailContent(
+            repository = repository,
+            onNavigateBack = onNavigateBack,
+            onToggleFavorite = onToggleFavorite,
+            modifier = modifier
+        )
+    } else {
+        EmptyDetailPanel(modifier = modifier)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RepositoryDetailContent(
+private fun TabletRepositoryDetailContent(
     repository: Repository,
     onNavigateBack: () -> Unit,
-    onToggleFavorite: (Repository) -> Unit
+    onToggleFavorite: (Repository) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = {
-                Column {
-                    Text("Repository Details")
-                }
-            },
-            navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-            },
+            title = { Text("Repository Details") },
             actions = {
                 IconButton(
                     onClick = { onToggleFavorite(repository) }
@@ -251,4 +254,15 @@ private fun StatItem(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+@Composable
+private fun EmptyDetailPanel(
+    modifier: Modifier = Modifier
+) {
+    TabletEmptyState(
+        title = "Select a repository",
+        message = "Choose a repository from the list to view its details",
+        modifier = modifier
+    )
 }
