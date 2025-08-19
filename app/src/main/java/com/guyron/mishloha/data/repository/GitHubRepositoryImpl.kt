@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.guyron.mishloha.data.local.dao.RepositoryDao
 import com.guyron.mishloha.data.mapper.toDomain
 import com.guyron.mishloha.data.remote.GitHubApiService
 import com.guyron.mishloha.domain.models.Repository
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 class GitHubRepositoryImpl @Inject constructor(
     private val apiService: GitHubApiService,
+    repositoryDao: RepositoryDao,
 ) : GitHubRepository {
 
     override fun getTrendingRepositories(timeFrame: TimeFrame): Flow<PagingData<Repository>> {
