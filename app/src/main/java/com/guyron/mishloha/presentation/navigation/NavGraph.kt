@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import com.guyron.mishloha.domain.models.Owner
 import com.guyron.mishloha.domain.models.Repository
 import com.guyron.mishloha.presentation.ui.detail.RepositoryDetailScreen
+import com.guyron.mishloha.presentation.ui.favorites.FavoritesScreen
 import com.guyron.mishloha.presentation.ui.trending.TrendingRepositoriesScreen
 import java.util.Date
 
@@ -46,7 +47,19 @@ fun NavGraph(
             )
         }
 
+        composable(Screen.Favorites.route) {
+            FavoritesScreen(
+                onRepositoryClick = { repository ->
+                    val repoKey = "selected_repo"
+                    selectedRepositories[repoKey] = repository
+                    navController.navigate("repository_detail/$repoKey")
 
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
         composable(
             route = Screen.RepositoryDetail.route,
             arguments = listOf(
