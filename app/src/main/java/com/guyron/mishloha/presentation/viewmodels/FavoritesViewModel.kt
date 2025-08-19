@@ -10,12 +10,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import android.content.Context
+import com.guyron.mishloha.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val getFavoriteRepositoriesUseCase: GetFavoriteRepositoriesUseCase,
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
-    private val searchFavoritesUseCase: SearchFavoritesUseCase
+    private val searchFavoritesUseCase: SearchFavoritesUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
@@ -50,7 +54,7 @@ class FavoritesViewModel @Inject constructor(
                 removeFromFavoritesUseCase(repository.id)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Failed to remove from favorites: ${e.message}"
+                    error = context.getString(R.string.failed_to_remove_from_favorites, e.message ?: "")
                 )
             }
         }
@@ -71,7 +75,7 @@ class FavoritesViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Failed to load favorites: ${e.message}"
+                    error = context.getString(R.string.failed_to_load_favorites, e.message ?: "")
                 )
             }
         }
@@ -85,7 +89,7 @@ class FavoritesViewModel @Inject constructor(
                 _searchResults.value = results
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Search failed: ${e.message}"
+                    error = context.getString(R.string.search_failed, e.message ?: "")
                 )
             } finally {
                 _isSearching.value = false

@@ -25,6 +25,8 @@ import com.guyron.mishloha.presentation.ui.components.RepositoryItem
 import com.guyron.mishloha.presentation.ui.components.SearchBar
 import com.guyron.mishloha.presentation.ui.components.TimeFrameSelector
 import com.guyron.mishloha.presentation.viewmodels.TrendingRepositoriesViewModel
+import androidx.compose.ui.res.stringResource
+import com.guyron.mishloha.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,12 +47,12 @@ fun TrendingRepositoriesScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         AppTopBar(
-            title = "Trending Repositories",
+            title = stringResource(R.string.trending_repositories),
             actions = {
                 IconButton(onClick = onNavigateToFavorites) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favorites"
+                        contentDescription = stringResource(R.string.favorites_icon)
                     )
                 }
             }
@@ -78,8 +80,8 @@ fun TrendingRepositoriesScreen(
                             repositories = searchResults,
                             onRepositoryClick = onRepositoryClick,
                             onFavoriteClick = { viewModel.toggleFavorite(it) },
-                            emptyTitle = "No repositories found",
-                            emptyMessage = "Try adjusting your search criteria"
+                            emptyTitle = stringResource(R.string.no_results_found),
+                            emptyMessage = stringResource(R.string.try_different_search)
                         )
                     }
                 }

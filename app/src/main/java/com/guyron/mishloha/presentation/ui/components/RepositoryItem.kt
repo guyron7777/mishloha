@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.guyron.mishloha.domain.models.Repository
+import androidx.compose.ui.res.stringResource
+import com.guyron.mishloha.R
 
 @Composable
 fun RepositoryItem(
@@ -52,7 +54,7 @@ fun RepositoryItem(
                             .data(repository.owner.avatarUrl ?: "")
                             .crossfade(true)
                             .build(),
-                        contentDescription = "Avatar of ${repository.owner.login}",
+                        contentDescription = stringResource(R.string.avatar_of, repository.owner.login),
                         modifier = Modifier
                             .size(48.dp)
                             .clip(CircleShape),
@@ -93,7 +95,7 @@ fun RepositoryItem(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Star,
-                                contentDescription = "Stars",
+                                contentDescription = stringResource(R.string.stars),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(16.dp)
                             )
@@ -121,7 +123,7 @@ fun RepositoryItem(
                 ) {
                     Icon(
                         imageVector = if (repository.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (repository.isFavorite) "Remove from favorites" else "Add to favorites",
+                        contentDescription = if (repository.isFavorite) stringResource(R.string.unfavorite_button) else stringResource(R.string.favorite_button),
                         tint = if (repository.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

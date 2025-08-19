@@ -27,6 +27,8 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import java.text.SimpleDateFormat
 import java.util.*
 import com.guyron.mishloha.R
+import androidx.compose.ui.res.stringResource
+import com.guyron.mishloha.data.Constants
 
 @Composable
 fun AdaptiveLayout(
@@ -93,13 +95,13 @@ private fun TabletRepositoryDetailContent(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val dateFormat = SimpleDateFormat(Constants.DISPLAY_DATE_FORMAT, Locale.getDefault())
 
     Column(
         modifier = modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = { Text("Repository Details") },
+            title = { Text(stringResource(R.string.repository_details)) },
             actions = {
             }
         )
@@ -119,7 +121,7 @@ private fun TabletRepositoryDetailContent(
                         .data(repository.owner.avatarUrl ?: "")
                         .crossfade(true)
                         .build(),
-                    contentDescription = "Avatar of ${repository.owner.login}",
+                    contentDescription = stringResource(R.string.avatar_of, repository.owner.login),
                     modifier = Modifier
                         .size(80.dp)
                         .clip(CircleShape),
@@ -138,7 +140,7 @@ private fun TabletRepositoryDetailContent(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "by ${repository.owner.login}",
+                        text = stringResource(R.string.by, repository.owner.login),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -149,7 +151,7 @@ private fun TabletRepositoryDetailContent(
 
             if (repository.description?.isNotBlank() == true) {
                 Text(
-                    text = "Description",
+                    text = stringResource(R.string.description),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -168,18 +170,18 @@ private fun TabletRepositoryDetailContent(
                 StatItem(
                     icon = painterResource(id = R.drawable.ic_star),
                     value = "${repository.stargazersCount}",
-                    label = "Stars"
+                    label = stringResource(R.string.stars)
                 )
                 StatItem(
                     icon = painterResource(id = R.drawable.ic_fork),
                     value = "${repository.forksCount}",
-                    label = "Forks"
+                    label = stringResource(R.string.forks)
                 )
                 if (repository.language != null) {
                     StatItem(
                         icon = painterResource(id = R.drawable.ic_language),
                         value = repository.language,
-                        label = "Language"
+                        label = stringResource(R.string.language)
                     )
                 }
             }
@@ -187,7 +189,7 @@ private fun TabletRepositoryDetailContent(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Created",
+                text = stringResource(R.string.created),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -208,10 +210,10 @@ private fun TabletRepositoryDetailContent(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                    contentDescription = "Open in browser"
+                    contentDescription = stringResource(R.string.open_in_browser)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Open on GitHub")
+                Text(stringResource(R.string.open_on_github))
             }
         }
     }
@@ -251,8 +253,8 @@ private fun EmptyDetailPanel(
     modifier: Modifier = Modifier
 ) {
     TabletEmptyState(
-        title = "Select a repository",
-        message = "Choose a repository from the list to view its details",
+        title = stringResource(R.string.select_repository),
+        message = stringResource(R.string.choose_repository_from_list),
         modifier = modifier
     )
 }

@@ -18,6 +18,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import android.content.Context
+import com.guyron.mishloha.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class TrendingRepositoriesViewModel @Inject constructor(
@@ -28,6 +31,7 @@ class TrendingRepositoriesViewModel @Inject constructor(
     getFavoriteRepositoriesUseCase: GetFavoriteRepositoriesUseCase,
     private val decorateWithFavoritesUseCase: DecorateWithFavoritesUseCase,
     private val decorateListWithFavoritesUseCase: DecorateListWithFavoritesUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TrendingRepositoriesUiState())
@@ -86,7 +90,7 @@ class TrendingRepositoriesViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Failed to update favorite: ${e.message}"
+                    error = context.getString(R.string.failed_to_update_favorite, e.message ?: "")
                 )
             }
         }
@@ -101,7 +105,7 @@ class TrendingRepositoriesViewModel @Inject constructor(
                 _searchResults.value = decoratedResults
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Search failed: ${e.message}"
+                    error = context.getString(R.string.search_failed, e.message ?: "")
                 )
             } finally {
                 _isSearching.value = false

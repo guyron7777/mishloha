@@ -18,6 +18,8 @@ import androidx.paging.compose.itemKey
 import com.guyron.mishloha.domain.models.Repository
 import com.guyron.mishloha.presentation.ui.components.*
 import com.guyron.mishloha.presentation.viewmodels.TrendingRepositoriesViewModel
+import androidx.compose.ui.res.stringResource
+import com.guyron.mishloha.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,12 +42,12 @@ fun TabletTrendingScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = { Text("Trending Repositories") },
+            title = { Text(stringResource(R.string.trending_repositories)) },
             actions = {
                 IconButton(onClick = onNavigateToFavorites) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favorites"
+                        contentDescription = stringResource(R.string.favorites_icon)
                     )
                 }
             }
@@ -143,7 +145,7 @@ private fun TabletTrendingRepositoriesList(
                     item {
                         ErrorContent(
                             error = (loadState.refresh as LoadState.Error).error.message
-                                ?: "Unknown error",
+                                ?: stringResource(R.string.unknown_error),
                             onRetry = { retry() },
                             onDismiss = { }
                         )
@@ -154,7 +156,7 @@ private fun TabletTrendingRepositoriesList(
                     item {
                         ErrorContent(
                             error = (loadState.append as LoadState.Error).error.message
-                                ?: "Unknown error",
+                                ?: stringResource(R.string.unknown_error),
                             onRetry = { retry() },
                             onDismiss = { }
                         )
@@ -174,8 +176,8 @@ private fun TabletSearchResultsList(
 ) {
     if (repositories.isEmpty()) {
         EmptyContent(
-            title = "No repositories found",
-            message = "Try adjusting your search criteria"
+            title = stringResource(R.string.no_results_found),
+            message = stringResource(R.string.try_different_search)
         )
     } else {
         LazyColumn(

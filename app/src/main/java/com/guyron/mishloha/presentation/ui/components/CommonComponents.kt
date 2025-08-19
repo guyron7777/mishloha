@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.guyron.mishloha.domain.models.Repository
+import androidx.compose.ui.res.stringResource
+import com.guyron.mishloha.R
 
 @Composable
 fun LoadingContent(
@@ -71,15 +73,15 @@ fun ErrorContent(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(onClick = onRetry) {
-                    Text("Retry")
+                    Text(stringResource(R.string.retry))
                 }
                 OutlinedButton(onClick = onDismiss) {
-                    Text("Dismiss")
+                    Text(stringResource(R.string.dismiss))
                 }
             }
         } else {
             OutlinedButton(onClick = onDismiss) {
-                Text("Dismiss")
+                Text(stringResource(R.string.dismiss))
             }
         }
     }
@@ -136,12 +138,12 @@ fun AppTopBar(
         title = { Text(title) },
         navigationIcon = {
             if (onNavigateBack != null) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
+                        IconButton(onClick = onNavigateBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = stringResource(R.string.back)
+            )
+        }
             }
         },
         actions = actions

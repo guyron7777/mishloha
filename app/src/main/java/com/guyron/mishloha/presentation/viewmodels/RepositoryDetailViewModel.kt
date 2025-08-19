@@ -11,13 +11,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import android.content.Context
+import com.guyron.mishloha.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class RepositoryDetailViewModel @Inject constructor(
     private val getRepositoryByIdUseCase: GetRepositoryByIdUseCase,
     private val getRepositoryByIdFromServerUseCase: GetRepositoryByIdFromServerUseCase,
     private val addToFavoritesUseCase: AddToFavoritesUseCase,
-    private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase
+    private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RepositoryDetailUiState())
@@ -45,14 +49,14 @@ class RepositoryDetailViewModel @Inject constructor(
                         )
                     } else {
                         _uiState.value = _uiState.value.copy(
-                            error = "Repository not found locally or on server",
+                            error = context.getString(R.string.repository_not_found),
                             isLoading = false
                         )
                     }
                 }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Failed to load repository: ${e.message}",
+                    error = context.getString(R.string.failed_to_load_repository, e.message ?: ""),
                     isLoading = false
                 )
             }
@@ -74,9 +78,12 @@ class RepositoryDetailViewModel @Inject constructor(
                     )
                 )
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = "Failed to ${if (repository.isFavorite) "remove from" else "add to"} favorites: ${e.message}"
-                )
+                val errorMessage = if (repository.isFavorite) {
+                    context.getString(R.string.failed_to_remove_from_favorites, e.message ?: "")
+                } else {
+                    context.getString(R.string.failed_to_add_to_favorites, e.message ?: "")
+                }
+                _uiState.value = _uiState.value.copy(error = errorMessage)
             }
         }
     }

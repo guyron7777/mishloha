@@ -7,6 +7,7 @@ import com.guyron.mishloha.data.remote.dto.RepositoryDto
 import com.guyron.mishloha.domain.models.TimeFrame
 import java.text.SimpleDateFormat
 import java.util.*
+import com.guyron.mishloha.data.Constants
 
 class GitHubPagingSource(
     private val apiService: GitHubApiService,
@@ -51,7 +52,7 @@ class GitHubPagingSource(
     }
 
     private fun buildSearchQuery(timeFrame: TimeFrame): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat(Constants.SEARCH_DATE_FORMAT, Locale.getDefault())
         val calendar = Calendar.getInstance()
         
         val endDate = dateFormat.format(calendar.time)

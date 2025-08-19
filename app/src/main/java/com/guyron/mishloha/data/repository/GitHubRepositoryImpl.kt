@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
+import com.guyron.mishloha.data.Constants
 
 class GitHubRepositoryImpl @Inject constructor(
     private val apiService: GitHubApiService,
@@ -24,9 +25,9 @@ class GitHubRepositoryImpl @Inject constructor(
     override fun getTrendingRepositories(timeFrame: TimeFrame): Flow<PagingData<Repository>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 30,
+                pageSize = Constants.DEFAULT_PAGE_SIZE,
                 enablePlaceholders = false,
-                prefetchDistance = 3
+                prefetchDistance = Constants.PREFETCH_DISTANCE
             ),
             pagingSourceFactory = {
                 GitHubPagingSource(apiService, timeFrame)
@@ -48,7 +49,7 @@ class GitHubRepositoryImpl @Inject constructor(
     }
 
     private fun buildTimeFrameQuery(timeFrame: TimeFrame): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat(Constants.SEARCH_DATE_FORMAT, Locale.getDefault())
         val calendar = Calendar.getInstance()
         
         val endDate = dateFormat.format(calendar.time)

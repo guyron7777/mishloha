@@ -15,6 +15,8 @@ import com.guyron.mishloha.presentation.ui.components.SearchResultsList
 import com.guyron.mishloha.presentation.ui.components.RepositoryList
 import com.guyron.mishloha.presentation.ui.components.SearchBar
 import com.guyron.mishloha.presentation.viewmodels.FavoritesViewModel
+import androidx.compose.ui.res.stringResource
+import com.guyron.mishloha.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +34,7 @@ fun FavoritesScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         AppTopBar(
-            title = "Favorite Repositories",
+            title = stringResource(R.string.favorites),
             onNavigateBack = onNavigateBack
         )
 
@@ -55,8 +57,8 @@ fun FavoritesScreen(
                             repositories = searchResults,
                             onRepositoryClick = onRepositoryClick,
                             onFavoriteClick = { viewModel.removeFromFavorites(it) },
-                            emptyTitle = "No favorites found",
-                            emptyMessage = "Try adjusting your search criteria",
+                            emptyTitle = stringResource(R.string.no_results_found),
+                            emptyMessage = stringResource(R.string.try_different_search),
                             showAvatar = true,
                             showStats = true
                         )
@@ -82,8 +84,8 @@ private fun FavoritesList(
 ) {
     if (repositories.isEmpty()) {
         EmptyContent(
-            title = "No favorite repositories yet",
-            message = "Add repositories to your favorites to see them here"
+            title = stringResource(R.string.no_favorites_yet),
+            message = stringResource(R.string.add_repositories_to_favorites)
         )
     } else {
         RepositoryList(

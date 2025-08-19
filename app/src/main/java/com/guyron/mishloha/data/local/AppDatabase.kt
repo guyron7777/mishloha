@@ -8,10 +8,11 @@ import android.content.Context
 import com.guyron.mishloha.data.local.dao.RepositoryDao
 import com.guyron.mishloha.data.local.entity.RepositoryEntity
 import com.guyron.mishloha.data.local.converter.DateConverter
+import com.guyron.mishloha.data.Constants
 
 @Database(
     entities = [RepositoryEntity::class],
-    version = 1,
+    version = Constants.DATABASE_VERSION,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)
@@ -27,7 +28,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "github_repositories_database"
+                    Constants.DATABASE_NAME
                 ).build()
                 INSTANCE = instance
                 instance

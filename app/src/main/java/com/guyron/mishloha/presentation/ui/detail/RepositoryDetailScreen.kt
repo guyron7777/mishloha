@@ -32,6 +32,8 @@ import com.guyron.mishloha.R
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.net.toUri
+import androidx.compose.ui.res.stringResource
+import com.guyron.mishloha.data.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +81,7 @@ private fun RepositoryDetailContent(
     onToggleFavorite: (Repository) -> Unit
 ) {
     val context = LocalContext.current
-    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val dateFormat = SimpleDateFormat(Constants.DISPLAY_DATE_FORMAT, Locale.getDefault())
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -87,14 +89,14 @@ private fun RepositoryDetailContent(
         TopAppBar(
             title = {
                 Column {
-                    Text("Repository Details")
+                    Text(stringResource(R.string.repository_details))
                 }
             },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = stringResource(R.string.back)
                     )
                 }
             },
@@ -126,7 +128,7 @@ private fun RepositoryDetailContent(
                         .data(repository.owner.avatarUrl ?: "")
                         .crossfade(true)
                         .build(),
-                    contentDescription = "Avatar of ${repository.owner.login}",
+                    contentDescription = stringResource(R.string.avatar_of, repository.owner.login),
                     modifier = Modifier
                         .size(80.dp)
                         .clip(CircleShape),
@@ -145,7 +147,7 @@ private fun RepositoryDetailContent(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "by ${repository.owner.login}",
+                        text = stringResource(R.string.by, repository.owner.login),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -156,7 +158,7 @@ private fun RepositoryDetailContent(
 
             if (repository.description?.isNotBlank() == true) {
                 Text(
-                    text = "Description",
+                    text = stringResource(R.string.description),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -175,18 +177,18 @@ private fun RepositoryDetailContent(
                 StatItem(
                     icon = painterResource(id = R.drawable.ic_star),
                     value = "${repository.stargazersCount}",
-                    label = "Stars"
+                    label = stringResource(R.string.stars)
                 )
                 StatItem(
                     icon = painterResource(id = R.drawable.ic_fork),
                     value = "${repository.forksCount}",
-                    label = "Forks"
+                    label = stringResource(R.string.forks)
                 )
                 if (repository.language != null) {
                     StatItem(
                         icon = painterResource(id = R.drawable.ic_language),
                         value = repository.language,
-                        label = "Language"
+                        label = stringResource(R.string.language)
                     )
                 }
             }
@@ -194,7 +196,7 @@ private fun RepositoryDetailContent(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Created",
+                text = stringResource(R.string.created),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -215,10 +217,10 @@ private fun RepositoryDetailContent(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                    contentDescription = "Open in browser"
+                    contentDescription = stringResource(R.string.open_in_browser)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Open on GitHub")
+                Text(stringResource(R.string.open_on_github))
             }
         }
     }

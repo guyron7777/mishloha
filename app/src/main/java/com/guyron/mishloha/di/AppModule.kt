@@ -10,6 +10,7 @@ import com.guyron.mishloha.domain.repository.FavoritesRepository
 import com.guyron.mishloha.domain.repository.GitHubRepository
 import com.guyron.mishloha.domain.usecase.DecorateListWithFavoritesUseCase
 import com.guyron.mishloha.domain.usecase.DecorateWithFavoritesUseCase
+import com.guyron.mishloha.data.Constants
 
 import dagger.Module
 import dagger.Provides
@@ -42,7 +43,7 @@ object AppModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
+            .baseUrl(Constants.GITHUB_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

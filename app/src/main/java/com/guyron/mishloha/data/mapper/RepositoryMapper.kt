@@ -8,16 +8,17 @@ import com.guyron.mishloha.domain.models.Owner
 import com.guyron.mishloha.domain.models.Repository
 import java.text.SimpleDateFormat
 import java.util.*
+import com.guyron.mishloha.data.Constants
 
 fun RepositoryDto.toDomain(): Repository {
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    val dateFormat = SimpleDateFormat(Constants.API_DATE_FORMAT, Locale.getDefault())
+    dateFormat.timeZone = TimeZone.getTimeZone(Constants.UTC_TIMEZONE)
     
     return Repository(
         id = id,
         name = name,
         fullName = fullName,
-        description = description ?: "No description available",
+        description = description ?: Constants.DEFAULT_DESCRIPTION,
         owner = owner.toDomain(),
         stargazersCount = stargazersCount,
         language = language,

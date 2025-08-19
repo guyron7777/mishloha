@@ -1,3 +1,51 @@
 <resources>
     <string name="app_name">mishloha</string>
+    
+    <!-- Navigation -->
+    <string name="trending_repositories">Trending Repositories</string>
+    <string name="favorites">Favorites</string>
+    <string name="repository_details">Repository Details</string>
+    <string name="back">Back</string>
+    
+    <!-- Actions -->
+    <string name="retry">Retry</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="open_on_github">Open on GitHub</string>
+    <string name="open_in_browser">Open in browser</string>
+    
+    <!-- Labels -->
+    <string name="description">Description</string>
+    <string name="stars">Stars</string>
+    <string name="forks">Forks</string>
+    <string name="language">Language</string>
+    <string name="created">Created</string>
+
+    <!-- Search -->
+    <string name="search_repositories">Search repositories</string>
+    <string name="search_favorites">Search favorites</string>
+    <string name="no_results_found">No results found</string>
+    <string name="try_different_search">Try a different search term</string>
+    
+    <!-- Empty States -->
+    <string name="no_favorites_yet">No favorites yet</string>
+    <string name="add_repositories_to_favorites">Add repositories to your favorites to see them here</string>
+    <string name="select_repository">Select a repository</string>
+    <string name="choose_repository_from_list">Choose a repository from the list to view its details</string>
+    
+    <!-- Error Messages -->
+    <string name="unknown_error">Unknown error</string>
+    <string name="failed_to_load_repository">Failed to load repository: %s</string>
+    <string name="repository_not_found">Repository not found locally or on server</string>
+    <string name="failed_to_update_favorite">Failed to update favorite: %s</string>
+    <string name="search_failed">Search failed: %s</string>
+    <string name="failed_to_add_to_favorites">Failed to add to favorites: %s</string>
+    <string name="failed_to_remove_from_favorites">Failed to remove from favorites: %s</string>
+    <string name="failed_to_load_favorites">Failed to load favorites: %s</string>
+    
+    <!-- Accessibility -->
+    <string name="avatar_of">Avatar of %s</string>
+    <string name="by">by %s</string>
+    <string name="favorites_icon">Favorites</string>
+    <string name="favorite_button">Add to favorites</string>
+    <string name="unfavorite_button">Remove from favorites</string>
 </resources>
