@@ -1,4 +1,4 @@
-package com.guyron.mishloha.ui.theme
+package com.guyron.mishloha.presentation.utils.theme
 
 import androidx.compose.ui.graphics.Color
 

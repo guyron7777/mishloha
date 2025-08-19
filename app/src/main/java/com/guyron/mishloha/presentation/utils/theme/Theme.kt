@@ -1,6 +1,5 @@
-package com.guyron.mishloha.ui.theme
+package com.guyron.mishloha.presentation.utils.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
