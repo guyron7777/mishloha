@@ -24,7 +24,7 @@ fun RepositoryDto.toDomain(): Repository {
         forksCount = forksCount,
         createdAt = try {
             dateFormat.parse(createdAt) ?: Date()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Date()
         },
         htmlUrl = htmlUrl
