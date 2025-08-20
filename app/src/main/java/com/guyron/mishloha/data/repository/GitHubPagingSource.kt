@@ -5,13 +5,14 @@ import androidx.paging.PagingState
 import com.guyron.mishloha.data.remote.GitHubApiService
 import com.guyron.mishloha.data.remote.dto.RepositoryDto
 import com.guyron.mishloha.domain.models.TimeFrame
-import java.text.SimpleDateFormat
-import java.util.*
-import com.guyron.mishloha.data.Constants
+import com.guyron.mishloha.data.mapper.toDomain
+import com.guyron.mishloha.data.utils.QueryUtils
+import com.guyron.mishloha.domain.models.Repository
 
 class GitHubPagingSource(
     private val apiService: GitHubApiService,
-    private val timeFrame: TimeFrame
+    private val timeFrame: TimeFrame,
+    private val cache: MutableMap<Long, Repository>
 ) : PagingSource<Int, RepositoryDto>() {
 
     override fun getRefreshKey(state: PagingState<Int, RepositoryDto>): Int? {
@@ -26,7 +27,7 @@ class GitHubPagingSource(
             val page = params.key ?: 1
             val pageSize = params.loadSize
 
-            val query = buildSearchQuery(timeFrame)
+            val query = QueryUtils.buildTimeFrameQuery(timeFrame)
             val response = apiService.searchRepositories(
                 query = query,
                 page = page,
@@ -41,6 +42,11 @@ class GitHubPagingSource(
 
             val prevKey = if (page == 1) null else page - 1
 
+            response.items.forEach { dto ->
+                val repository = dto.toDomain()
+                cache[repository.id] = repository
+            }
+
             LoadResult.Page(
                 data = response.items,
                 prevKey = prevKey,
@@ -51,20 +57,5 @@ class GitHubPagingSource(
         }
     }
 
-    private fun buildSearchQuery(timeFrame: TimeFrame): String {
-        val dateFormat = SimpleDateFormat(Constants.SEARCH_DATE_FORMAT, Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        
-        val endDate = dateFormat.format(calendar.time)
-        
-        when (timeFrame) {
-            TimeFrame.DAY -> calendar.add(Calendar.DAY_OF_MONTH, -1)
-            TimeFrame.WEEK -> calendar.add(Calendar.WEEK_OF_YEAR, -1)
-            TimeFrame.MONTH -> calendar.add(Calendar.MONTH, -1)
-        }
-        
-        val startDate = dateFormat.format(calendar.time)
-        
-        return "created:$startDate..$endDate"
-    }
+
 }
